@@ -1,0 +1,26 @@
+export const SET_ALERT = 'SET_ALERT';
+export const REMOVE_ALERT = 'REMOVE_ALERT';
+export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
+export const REGISTER_FAIL = 'REGISTER_FAIL';
+export const USER_LOADED = 'USER_LOADED';
+export const AUTH_ERROR = 'AUTH_ERROR';
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+export const LOGIN_FAIL = 'LOGIN_FAIL';
+export const LOGOUT = 'LOGOUT';
+export const GET_INCOMES = 'GET_INCOMES';
+export const INCOME_ERROR = 'INCOME_ERROR';
+export const ADD_INCOME = 'ADD_INCOME';
+export const DELETE_INCOME = 'DELETE_INCOME';
+export const UPDATE_INCOME = 'UPDATE_INCOME';
+export const GET_EXPENSES = 'GET_EXPENSES';
+export const EXPENSE_ERROR = 'EXPENSE_ERROR';
+export const ADD_EXPENSE = 'ADD_EXPENSE';
+export const DELETE_EXPENSE = 'DELETE_EXPENSE';
+export const UPDATE_EXPENSE = 'UPDATE_EXPENSE';
+// Goal Action Types
+export const GET_GOALS = 'GET_GOALS';
+export const ADD_GOAL = 'ADD_GOAL';
+export const DELETE_GOAL = 'DELETE_GOAL';
+export const UPDATE_GOAL_DETAILS = 'UPDATE_GOAL_DETAILS'; // For editing a goal
+export const UPDATE_GOAL_PROGRESS = 'UPDATE_GOAL_PROGRESS'; // For adding savings
+export const GOAL_ERROR = 'GOAL_ERROR';

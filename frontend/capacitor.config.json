@@ -1,0 +1,6 @@
+{
+  "appId": "com.moneymate.app",
+  "appName": "MoneyMate",
+  "webDir": "build",
+  "bundledWebRuntime": false
+}

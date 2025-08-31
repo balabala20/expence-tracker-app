@@ -1,0 +1,215 @@
+.transaction-main {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+  height: 100vh;
+  margin-left: 260px;
+}
+
+.transaction-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.transaction-header h1 {
+    font-size: 2rem;
+    margin: 0;
+}
+
+/* This is the default style for the button (Desktop) */
+.add-transaction-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.add-transaction-btn:hover {
+    background-color: #6941C6;
+}
+
+/* We hide the mobile-only plus sign by default */
+.add-transaction-btn .plus-icon {
+    display: none;
+}
+
+.chart-container {
+    height: 300px;
+    margin-bottom: 30px;
+}
+
+.transaction-list-container {
+    margin-top: 30px;
+}
+
+.list-header {
+    margin-bottom: 20px;
+}
+
+.list-header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.transaction-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1200;
+}
+
+.modal-content {
+    background: var(--card-background); /* Use theme variable */
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h2 {
+    color: var(--text-color); /* Use theme variable */
+    margin: 0;
+}
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+}
+
+/* Updated styles for form elements */
+.modal-body .form-group {
+    margin-bottom: 20px;
+}
+
+.modal-body .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.modal-body .form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--background-color); /* Use theme variable */
+    color: var(--text-color); /* Use theme variable */
+    font-size: 1rem;
+}
+
+.modal-body .form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.modal-footer {
+    text-align: right;
+    margin-top: 20px;
+}
+
+
+@media (max-width: 768px) {
+  .transaction-main {
+    margin-left: 0;
+    padding: 20px;
+    padding-bottom: 100px; /* Add space at the bottom */
+  }
+
+  .transaction-header {
+    position: sticky;
+    top: 0;
+    background: var(--background-color);
+    padding-top: 20px;
+    padding-bottom: 10px;
+    z-index: 100;
+  }
+  
+  /* Hide the text part of the main button on mobile */
+  .transaction-header .add-transaction-btn .btn-text {
+      display: none;
+  }
+  
+  /* Display the plus icon for the main button on mobile */
+  .transaction-header .add-transaction-btn .plus-icon {
+      display: block;
+      font-size: 2.5rem;
+      line-height: 1;
+  }
+  
+  /* This style will apply only to the main floating button on mobile */
+  .transaction-header .add-transaction-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      padding: 0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      z-index: 1100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
+  
+  /* --- New Styles for Modal Button on Mobile --- */
+  
+  /* Target the button specifically in the modal footer */
+  .modal-footer .add-transaction-btn {
+      position: static; /* Override 'fixed' position */
+      width: 100%;
+      height: auto;
+      border-radius: 8px; /* Restore original border-radius */
+      box-shadow: none;
+      padding: 15px; /* Make it taller */
+      font-size: 1.1rem;
+  }
+
+  /* Make sure the text is visible on the modal button */
+  .modal-footer .add-transaction-btn .btn-text {
+      display: inline;
+  }
+  
+  /* Hide the plus icon on the modal button */
+  .modal-footer .add-transaction-btn .plus-icon {
+      display: none;
+  }
+}
