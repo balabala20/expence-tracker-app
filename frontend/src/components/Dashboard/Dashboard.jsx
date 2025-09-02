@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getIncomes } from '../../actions/income';
 import { getExpenses } from '../../actions/expense';
+import { getGoals } from '../../actions/goals';
 import './Dashboard.css';
 import ThemeToggleButton from '../Layout/ThemeToggleButton';
+import { generateInsights } from '../../utils/insights';
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut, Pie } from 'react-chartjs-2';
@@ -24,12 +26,10 @@ const filterByDateRange = (transactions, days) => {
 
 const createPieChartData = (transactions, type) => {
     const dataMap = new Map();
-
-    // Aggregate amounts for the same label (e.g., multiple "Groceries" expenses)
     transactions.forEach(t => {
-        const label = type === 'income' ? t.source : t.name;
+        const label = type === 'income' ? t.source : (t.category || t.name);
         const currentAmount = dataMap.get(label) || 0;
-        dataMap.set(label, currentAmount + t.amount);
+        dataMap.set(label, currentAmount + parseFloat(t.amount));
     });
 
     const labels = Array.from(dataMap.keys());
@@ -39,46 +39,43 @@ const createPieChartData = (transactions, type) => {
         labels,
         datasets: [{
             data,
-            backgroundColor: [
-                '#7F56D9', '#12B76A', '#F04438', '#FDB022',
-                '#00B8D9', '#FF4D4F', '#40A9FF', '#FAAD14',
-                '#52C41A', '#F759AB'
-            ],
-            borderColor: '#FFFFFF',
+            backgroundColor: ['#7F56D9', '#12B76A', '#F04438', '#FDB022', '#00B8D9', '#FF4D4F', '#40A9FF', '#FAAD14', '#52C41A', '#F759AB'],
+            borderColor: 'var(--card-background)',
             borderWidth: 2,
         }]
     };
 };
 
 const pieChartOptions = {
-    plugins: {
-        legend: { position: 'bottom' }
-    },
+    plugins: { legend: { position: 'bottom' } },
     responsive: true,
     maintainAspectRatio: false
 };
 
-const Dashboard = ({ getIncomes, getExpenses, income, expense, toggleSidebar }) => {
+
+const Dashboard = ({ getIncomes, getExpenses, getGoals, income, expense, goals, toggleSidebar }) => {
     useEffect(() => {
         getIncomes();
         getExpenses();
-    }, [getIncomes, getExpenses]);
+        getGoals();
+    }, [getIncomes, getExpenses, getGoals]);
 
-    const totalIncome = income.incomes.reduce((acc, item) => (acc += item.amount), 0);
-    const totalExpenses = expense.expenses.reduce((acc, item) => (acc += item.amount), 0);
+    const insights = useMemo(() => generateInsights(expense.expenses, income.incomes, goals.goals), [expense.expenses, income.incomes, goals.goals]);
+
+    const totalIncome = income.incomes.reduce((acc, item) => (acc += parseFloat(item.amount)), 0);
+    const totalExpenses = expense.expenses.reduce((acc, item) => (acc += parseFloat(item.amount)), 0);
     const totalBalance = totalIncome - totalExpenses;
 
     const recentTransactions = [...income.incomes, ...expense.expenses]
         .sort((a, b) => new Date(b.date) - new Date(a.date))
         .slice(0, 5);
 
-    // Data for the main doughnut chart
     const doughnutChartData = {
         labels: ['Total Income', 'Total Expenses'],
         datasets: [{
             data: [totalIncome > 0 ? totalIncome : 1, totalExpenses > 0 ? totalExpenses : 1],
             backgroundColor: ['#12B76A', '#F04438'],
-            borderColor: ['#FFFFFF'],
+            borderColor: ['var(--card-background)'],
             borderWidth: 4,
             cutout: '80%',
         }],
@@ -87,7 +84,7 @@ const Dashboard = ({ getIncomes, getExpenses, income, expense, toggleSidebar }) 
         plugins: { legend: { display: false } },
         maintainAspectRatio: false,
     };
-
+    
     // Data for the analysis pie charts
     const weeklyIncomeData = createPieChartData(filterByDateRange(income.incomes, 7), 'income');
     const weeklyExpenseData = createPieChartData(filterByDateRange(expense.expenses, 7), 'expense');
@@ -99,74 +96,88 @@ const Dashboard = ({ getIncomes, getExpenses, income, expense, toggleSidebar }) 
     return (
         <main className="dashboard-main">
             <div className="dashboard-content-wrapper">
-            <div className="dashboard-header">
-                <h1>Dashboard</h1>
-                <ThemeToggleButton />
-                <button className="menu-btn" onClick={toggleSidebar}>☰</button>
-            </div>
-            <div className="summary-cards">
-                <div className="summary-card">
-                    <div className="summary-card-icon balance">💰</div>
-                    <div className="summary-card-info">
-                        <h2>Total Balance</h2>
-                        <p>${totalBalance.toFixed(2)}</p>
+                <div className="dashboard-header">
+                    <h1>Dashboard</h1>
+                    <div className="header-controls">
+                        <ThemeToggleButton />
+                        <button className="menu-btn" onClick={toggleSidebar}>☰</button>
                     </div>
                 </div>
-                <div className="summary-card">
-                    <div className="summary-card-icon income">📈</div>
-                    <div className="summary-card-info">
-                        <h2>Total Income</h2>
-                        <p>${totalIncome.toFixed(2)}</p>
+                <div className="summary-cards">
+                     <div className="summary-card">
+                        <div className="summary-card-icon balance">💰</div>
+                        <div className="summary-card-info">
+                            <h2>Total Balance</h2>
+                            <p>₹{totalBalance.toFixed(2)}</p>
+                        </div>
                     </div>
-                </div>
-                <div className="summary-card">
-                    <div className="summary-card-icon expense">📉</div>
-                    <div className="summary-card-info">
-                        <h2>Total Expenses</h2>
-                        <p>${totalExpenses.toFixed(2)}</p>
+                    <div className="summary-card">
+                        <div className="summary-card-icon income">📈</div>
+                        <div className="summary-card-info">
+                            <h2>Total Income</h2>
+                            <p>₹{totalIncome.toFixed(2)}</p>
+                        </div>
                     </div>
-                </div>
-            </div>
-
-            <div className="dashboard-content">
-                <div className="content-card recent-transactions-card">
-                    <div className="card-header">
-                        <h2>Recent Transactions</h2>
-                        <Link to="#">See All</Link>
+                    <div className="summary-card">
+                        <div className="summary-card-icon expense">📉</div>
+                        <div className="summary-card-info">
+                            <h2>Total Expenses</h2>
+                            <p>₹{totalExpenses.toFixed(2)}</p>
+                        </div>
                     </div>
-                    <ul className="transaction-list">
-                        {recentTransactions.length > 0 ? (
-                            recentTransactions.map(t => (
-                                <li key={t._id} className="transaction-item">
-                                    <div className={`transaction-icon ${t.source ? 'income' : 'expense'}`}>{t.source ? '📥' : '📤'}</div>
-                                    <div className="transaction-details">
-                                        <h4>{t.source || t.name}</h4>
-                                        <p>{new Date(t.date).toLocaleDateString()}</p>
-                                    </div>
-                                    <p className={`transaction-amount ${t.source ? 'income' : 'expense'}`}>
-                                        {t.source ? '+' : '-'}${t.amount.toFixed(2)}
-                                    </p>
-                                </li>
-                            ))
-                        ) : (<p>No recent transactions.</p>)}
-                    </ul>
                 </div>
                 
-                <div className="content-card financial-overview-card">
+                {/* Smart Insights Section */}
+                <div className="content-card insights-section">
                     <div className="card-header">
-                        <h2>Financial Overview</h2>
+                        <h2>💡 Smart Insights</h2>
                     </div>
-                    <div className="chart-wrapper">
-                        <div className="chart-center-text">
-                            <h3>Total Balance</h3>
-                            <p>${totalBalance.toFixed(2)}</p>
+                    <ul className="insights-list">
+                        {insights.map((insight, index) => (
+                            <li key={index} className="insight-item">{insight}</li>
+                        ))}
+                    </ul>
+                </div>
+
+                <div className="dashboard-content">
+                    <div className="content-card recent-transactions-card">
+                        <div className="card-header">
+                            <h2>Recent Transactions</h2>
+                            <Link to="/transactions">See All</Link>
                         </div>
-                        <Doughnut data={doughnutChartData} options={doughnutChartOptions} />
+                        <ul className="transaction-list">
+                            {recentTransactions.length > 0 ? (
+                                recentTransactions.map(t => (
+                                    <li key={t._id} className="transaction-item">
+                                        <div className={`transaction-icon ${t.source ? 'income' : 'expense'}`}>{t.source ? '💰' : '💸'}</div>
+                                        <div className="transaction-details">
+                                            <h4>{t.source || t.name}</h4>
+                                            <p>{new Date(t.date).toLocaleDateString()}</p>
+                                        </div>
+                                        <p className={`transaction-amount ${t.source ? 'income' : 'expense'}`}>
+                                            {t.source ? '+' : '-'}₹{parseFloat(t.amount).toFixed(2)}
+                                        </p>
+                                    </li>
+                                ))
+                            ) : (<p>No recent transactions.</p>)}
+                        </ul>
+                    </div>
+                    
+                    <div className="content-card financial-overview-card">
+                        <div className="card-header">
+                            <h2>Financial Overview</h2>
+                        </div>
+                        <div className="chart-wrapper">
+                            <div className="chart-center-text">
+                                <h3>Balance</h3>
+                                <p>₹{totalBalance.toFixed(2)}</p>
+                            </div>
+                            <Doughnut data={doughnutChartData} options={doughnutChartOptions} />
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div className="analysis-section">
+                <div className="analysis-section">
                 <div className="content-card">
                     <div className="card-header"><h2>Weekly Income</h2></div>
                     <div className="chart-wrapper">
@@ -236,6 +247,7 @@ const Dashboard = ({ getIncomes, getExpenses, income, expense, toggleSidebar }) 
 const mapStateToProps = state => ({
     income: state.income,
     expense: state.expense,
+    goals: state.goals,
 });
 
-export default connect(mapStateToProps, { getIncomes, getExpenses })(Dashboard);
+export default connect(mapStateToProps, { getIncomes, getExpenses, getGoals })(Dashboard);

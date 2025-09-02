@@ -231,6 +231,62 @@
   justify-content: center;
 }
 
+
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.menu-btn {
+    display: none;
+}
+
+.insights-section {
+    margin-bottom: 30px;
+}
+
+.insights-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.insight-item {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+}
+
+.insight-item:last-child {
+    border-bottom: none;
+}
+
+.transaction-details p {
+    text-transform: capitalize;
+}
+
+.modal-body .form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+.modal-body .form-group select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+
 /* Responsive styles */
 @media (max-width: 768px) {
   .dashboard-main {
@@ -243,5 +299,25 @@
   .dashboard-content,
   .analysis-section {
     grid-template-columns: 1fr;
+  }
+  .dashboard-main {
+    margin-left: 0;
+    padding: 20px;
+  }
+  .dashboard-header {
+    padding: 0 10px;
+  }
+  .dashboard-content,
+  .analysis-section {
+    grid-template-columns: 1fr;
+  }
+   .menu-btn {
+    display: block;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 1200;
+    color: var(--text-color);
   }
 }

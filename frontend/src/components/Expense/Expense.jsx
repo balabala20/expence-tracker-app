@@ -7,22 +7,24 @@ import { Line } from 'react-chartjs-2';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
+const CATEGORIES = ['Groceries', 'Utilities', 'Transport', 'Entertainment', 'Health', 'Dining Out', 'Shopping', 'Other'];
+
 const Expense = ({ getExpenses, addExpense, updateExpense, deleteExpense, expense: { expenses, loading }, toggleSidebar }) => {
     const [showModal, setShowModal] = useState(false);
-    const [formData, setFormData] = useState({ name: '', amount: '', date: '' });
+    const [formData, setFormData] = useState({ name: '', amount: '', date: '', category: 'Other' });
     const [editingId, setEditingId] = useState(null);
 
     useEffect(() => {
         getExpenses();
     }, [getExpenses]);
 
-    const { name, amount, date } = formData;
+    const { name, amount, date, category } = formData;
 
     const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
     const handleAddClick = () => {
         setEditingId(null);
-        setFormData({ name: '', amount: '', date: '' });
+        setFormData({ name: '', amount: '', date: '', category: 'Other' });
         setShowModal(true);
     };
 
@@ -31,7 +33,8 @@ const Expense = ({ getExpenses, addExpense, updateExpense, deleteExpense, expens
         setFormData({
             name: expense.name,
             amount: expense.amount,
-            date: new Date(expense.date).toISOString().split('T')[0]
+            date: new Date(expense.date).toISOString().split('T')[0],
+            category: expense.category || 'Other'
         });
         setShowModal(true);
     };
@@ -89,14 +92,14 @@ const Expense = ({ getExpenses, addExpense, updateExpense, deleteExpense, expens
                 <div className="list-header"><h2>All Expenses</h2></div>
                  <ul className="transaction-list">
                    {!loading && expenses.length > 0 ? (
-                       expenses.map(exp => (
+                       expenses.sort((a, b) => new Date(b.date) - new Date(a.date)).map(exp => (
                             <li key={exp._id} className="transaction-item">
                                 <div className="transaction-icon expense">💸</div>
                                 <div className="transaction-details">
                                     <h4>{exp.name}</h4>
-                                    <p>{new Date(exp.date).toLocaleDateString()}</p>
+                                    <p>{exp.category} &bull; {new Date(exp.date).toLocaleDateString()}</p>
                                 </div>
-                                <div className="transaction-amount expense">-${exp.amount.toFixed(2)}</div>
+                                <div className="transaction-amount expense">-₹{parseFloat(exp.amount).toFixed(2)}</div>
                                 <div className="transaction-actions">
                                     <button onClick={() => handleEditClick(exp)} className="action-btn edit-btn">✏️</button>
                                     <button onClick={() => deleteExpense(exp._id)} className="action-btn delete-btn">🗑️</button>
@@ -125,6 +128,12 @@ const Expense = ({ getExpenses, addExpense, updateExpense, deleteExpense, expens
                                 <div className="form-group">
                                     <label>Amount</label>
                                     <input type="number" name="amount" placeholder="e.g., 150" value={amount} onChange={onChange} required />
+                                </div>
+                                <div className="form-group">
+                                    <label>Category</label>
+                                    <select name="category" value={category} onChange={onChange} required>
+                                        {CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                                    </select>
                                 </div>
                                 <div className="form-group">
                                     <label>Date</label>

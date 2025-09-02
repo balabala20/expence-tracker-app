@@ -1,4 +1,38 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 300;
+  src: local(''),
+       url('./fonts/Poppins-Light.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  src: local(''),
+       url('./fonts/Poppins-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  src: local(''),
+       url('./fonts/Poppins-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  src: local(''),
+       url('./fonts/Poppins-SemiBold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  src: local(''),
+       url('./fonts/Poppins-Bold.ttf') format('truetype');
+}
 
 :root {
   --primary-color: #7F56D9;

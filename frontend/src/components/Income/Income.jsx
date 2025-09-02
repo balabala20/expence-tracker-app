@@ -136,7 +136,7 @@ const Income = ({
                   <p>{new Date(inc.date).toLocaleDateString()}</p>
                 </div>
                 <div className="transaction-amount income">
-                  +${inc.amount.toFixed(2)}
+                  +₹{inc.amount.toFixed(2)}
                 </div>
                 <div className="transaction-actions">
                   <button
