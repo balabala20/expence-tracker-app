@@ -18,8 +18,7 @@ const RecentTransactions = ({ getIncomes, getExpenses, income, expense, toggleSi
     <main className="transaction-main">
       <div className="transaction-header">
         <h1>All Transactions</h1>
-        <button className="menu-btn" onClick={toggleSidebar}>☰</button>
-        <Link to="/" className="back-to-dash">Back to Dashboard</Link>
+        <Link to="/" className="back-to-dash">Back</Link>
       </div>
 
       <div className="content-card transaction-list-container">
